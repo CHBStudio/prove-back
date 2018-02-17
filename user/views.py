@@ -83,7 +83,7 @@ class LogoutView(NoCSRFView):
         if user.pk:
             AuthToken.objects.get(user=user).delete()
             return Response(data={
-                'status':'ok'
+                'status': 'ok'
             })
         else:
             raise NotAuthenticated
@@ -93,6 +93,13 @@ class GetView(NoCSRFView):
 
     def get(self, request):
         user = request.user
-        return Response(data={
-            'user': UserSerializer(user).data
-        })
+        if user.pk:
+            return Response(data={
+                'user': UserSerializer(user).data
+            })
+        else:
+            raise Response(
+                data={
+                    'user': None
+                }
+            )
