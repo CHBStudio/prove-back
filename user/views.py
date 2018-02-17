@@ -98,7 +98,7 @@ class GetView(NoCSRFView):
                 'user': UserSerializer(user).data
             })
         else:
-            raise Response(
+            return Response(
                 data={
                     'user': None
                 }
