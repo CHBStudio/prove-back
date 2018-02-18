@@ -11,16 +11,6 @@ from app.views import NoCSRFView
 from user.models import AuthToken
 from user.serializer import UserSerializer
 
-
-class TestView(NoCSRFView):
-
-    @method_decorator(login_required)
-    def get(self, request, format=None):
-        return Response(headers={
-            'Cookie': 'Autorza'
-        }, data='ok')
-
-
 class LoginView(NoCSRFView):
 
     def post(self, request):
@@ -31,12 +21,13 @@ class LoginView(NoCSRFView):
                 user = User.objects.get(email=email)
                 if user and user.check_password(password):
                     token = generate_token(email=email, password=password, user_id=user.id)
-                    userializer = UserSerializer(user)
+                    userdata = UserSerializer(user).data
+                    userdata['courses'] = list(user.course_set.values_list('id',flat=True))
                     return Response(headers={
                         'Set-Cookie': 'Authorization={}; Path=/'.format(token)
                     },
                         data={
-                            'user': userializer.data
+                            'user': userdata
                         })
 
                 else:
@@ -66,11 +57,13 @@ class RegisterView(NoCSRFView):
                 user = User.objects.get(email=email)
                 userializer = UserSerializer(user)
                 token = generate_token(email=email, password=password, user_id=user.id)
+                user = userializer.data
+                user['courses'] = []
                 return Response(headers={
                     'Set-Cookie': 'Authorization={}; Path=/'.format(token)
                 },
                     data={
-                        'user': userializer.data
+                        'user': user
                     })
         else:
             raise ParseError
@@ -94,8 +87,10 @@ class GetView(NoCSRFView):
     def get(self, request):
         user = request.user
         if user.pk:
+            userdata = UserSerializer(user).data
+            userdata['courses'] = list(user.course_set.values_list('id', flat=True))
             return Response(data={
-                'user': UserSerializer(user).data
+                'user': userdata
             })
         else:
             return Response(
