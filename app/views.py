@@ -12,19 +12,4 @@ class NoCSRFView(APIView):
     authentication_classes = (CsrfExemptSessionAuthentication,)
 
 
-class LandingView(NoCSRFView):
 
-    def get(self, request, format=None):
-        user = request.user
-        courseslist = []
-        courses = Course.objects.all().order_by('order')
-        for course in courses:
-            course_json = CourseSerializer(course).data
-            course_json['has_permissions'] = True if user.pk and user in course.users.all() else False
-            course_json['photo'] = 'media/' + course_json['photo']
-            course_json['video'] = 'media/' + course_json['video']
-            courseslist.append(course_json)
-
-        return Response(data={
-            'courses': courseslist
-        })

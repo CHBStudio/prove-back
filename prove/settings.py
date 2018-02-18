@@ -14,6 +14,7 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import datetime
+from configparser import ConfigParser
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -22,9 +23,16 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '$u*%4(k6(kos_04ox3m$@0b8r@laig5u+b^1ywp7ry&im3ud8o'
+PLATFORM_CONFIG_NAME = "prove.conf"
 
+production_config = os.path.join('/etc', 'prove', PLATFORM_CONFIG_NAME)
+development_config = os.path.join(BASE_DIR, PLATFORM_CONFIG_NAME)
+
+config_path = production_config if os.path.exists(production_config) else development_config
+config = ConfigParser()
+config.read(config_path)
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config.getboolean('common', 'debug', fallback=True)
 
 ALLOWED_HOSTS = []
 
@@ -38,9 +46,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'landing',
     'payment',
     'user',
-    'course'
+    'course',
+
 ]
 
 MIDDLEWARE = [
@@ -84,17 +94,19 @@ WSGI_APPLICATION = 'prove.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'prove',
-        'USER': 'prove',
-        'PASSWORD': 'prove',
-        'HOST': '127.0.0.1',
-        'PORT': 3306,
+        'ENGINE': config.get('database', 'ENGINE', fallback='django.db.backends.mysql'),
+        'NAME': config.get('database', 'NAME', fallback='prove'),
+        'USER': config.get('database', 'USER', fallback='prove'),
+        'PASSWORD': config.get('database', 'PASSWORD', fallback='prove'),
+        'HOST': config.get('database', 'HOST', fallback='127.0.0.1'),
+        'PORT': config.getint('database', 'PORT', fallback=3306),
         'TEST_CHARSET': 'utf8mb4'
     }
 }
-MERCHANT_LOGIN = 'prokrutyh'
-PASSWORD1 = 'rokus357'
+MERCHANT_LOGIN = config.get('robokassa', 'LOGIN', fallback='')
+PASSWORD1 = config.get('robokassa', 'PASSWORD1', fallback='')
+PASSWORD2 = config.get('robokassa', 'PASSWORD2', fallback='')
+SECRET_HASH = config.get('common', 'SECRET_HASH', fallback='')
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
@@ -133,5 +145,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/opt/prove-back/static/'
+STATIC_ROOT = config.get('common', 'STATIC_ROOT', fallback='/opt/prove-back/static/')
 

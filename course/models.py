@@ -19,6 +19,9 @@ class Course(Model):
     order = models.IntegerField(null=True, blank=True, default=None, verbose_name='Порядок')
     users = models.ManyToManyField(User, verbose_name='Оплатившие')
 
+    def __str__(self):
+        return self.title
+
 
 class Advanteges(Model):
     class Meta:
@@ -30,3 +33,28 @@ class Advanteges(Model):
 
     def __str__(self):
         return self.text
+
+class Schedule(Model):
+    class Meta:
+        verbose_name = 'расписание'
+        verbose_name_plural = 'расписания'
+
+    DAY_OF_THE_WEEK = (
+        (1, 'Понедельник'),
+        (2, 'Вторник'),
+        (3, 'Среда'),
+        (4,'Четверг'),
+        (5, 'Пятница'),
+        (6, 'Суббота'),
+        (7, 'Воскресенье'),
+    )
+    course = models.ForeignKey(Course,on_delete=models.CASCADE,related_name='Курс')
+    day = models.IntegerField(choices=DAY_OF_THE_WEEK,verbose_name='День')
+
+class Exercise(Model):
+    schedule = models.ForeignKey(Schedule,on_delete=models.CASCADE,related_name='Расписание')
+    video = models.FileField(upload_to='private/video/', default=None, verbose_name='Видео')
+    description = models.TextField(verbose_name='Описание')
+    order = models.IntegerField(blank=True,null=True,verbose_name='Порядок')
+
+

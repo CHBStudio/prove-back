@@ -16,5 +16,6 @@ npm-debug.log
 assets
 yarn-error.log
 
-secret.conf
+prove.conf
 .vscode
+
