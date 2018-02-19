@@ -16,8 +16,8 @@ class AuthMiddleware(MiddlewareMixin):
                     request.user = token.user
                 except AuthToken.DoesNotExist:
                     pass
-        # else:
-        #     request.user = AnonymousUser()
+            else:
+                request.user = AnonymousUser()
 
 class CsrfExemptSessionAuthentication(SessionAuthentication):
 

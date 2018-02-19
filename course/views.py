@@ -19,9 +19,9 @@ class UrlView(NoCSRFView):
         course = Course.objects.get(id=course_id)
         cost = course.cost
         SignatureValue = hashlib.md5(
-            '{}:{}:{}:{}'.format(MERCHANT_LOGIN, cost, request.user.id, PASSWORD1).encode('utf-8')).hexdigest()
-        url = 'https://auth.robokassa.ru/Merchant/Index.aspx?MerchantLogin={}&OutSum={}&InvId={}&SignatureValue={}&IsTest=1'.format(
-            MERCHANT_LOGIN, cost, request.user.id, SignatureValue)
+            '{}:{}:{}:{}:Shp_course={}'.format(MERCHANT_LOGIN, cost, request.user.id, PASSWORD1,course_id).encode('utf-8')).hexdigest()
+        url = 'https://auth.robokassa.ru/Merchant/Index.aspx?MerchantLogin={}&OutSum={}&InvId={}&SignatureValue={}&Shp_course={}'.format(
+            MERCHANT_LOGIN, cost, request.user.id, SignatureValue,course_id)
 
         return Response(data={
             'url': url

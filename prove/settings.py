@@ -103,7 +103,7 @@ DATABASES = {
         'TEST_CHARSET': 'utf8mb4'
     }
 }
-MERCHANT_LOGIN = config.get('robokassa', 'LOGIN', fallback='')
+MERCHANT_LOGIN = config.get('robokassa', 'LOGIN', fallback='prokrutyh')
 PASSWORD1 = config.get('robokassa', 'PASSWORD1', fallback='')
 PASSWORD2 = config.get('robokassa', 'PASSWORD2', fallback='')
 SECRET_HASH = config.get('common', 'SECRET_HASH', fallback='')
