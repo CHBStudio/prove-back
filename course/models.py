@@ -51,6 +51,7 @@ class Schedule(Model):
     course = models.ForeignKey(Course,on_delete=models.CASCADE,related_name='Курс')
     day = models.IntegerField(choices=DAY_OF_THE_WEEK,verbose_name='День')
 
+
 class Exercise(Model):
     schedule = models.ForeignKey(Schedule,on_delete=models.CASCADE,related_name='Расписание')
     video = models.FileField(upload_to='private/video/', default=None, verbose_name='Видео')

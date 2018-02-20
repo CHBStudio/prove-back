@@ -4,7 +4,6 @@ from django.contrib import admin
 from django.urls import path, include
 
 from course.views import CheckPerm
-from landing.views import LandingView
 from prove import settings
 admin.autodiscover()
 
