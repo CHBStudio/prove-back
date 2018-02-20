@@ -1,5 +1,6 @@
 import hashlib
 
+from django.http import HttpResponseRedirect
 from django.utils.decorators import method_decorator
 from proxy.views import proxy_view
 from rest_framework.exceptions import NotFound
@@ -23,9 +24,7 @@ class UrlView(NoCSRFView):
         url = 'https://auth.robokassa.ru/Merchant/Index.aspx?MerchantLogin={}&OutSum={}&InvId={}&SignatureValue={}&Shp_course={}'.format(
             MERCHANT_LOGIN, cost, request.user.id, SignatureValue,course_id)
 
-        return Response(data={
-            'url': url
-        })
+        return HttpResponseRedirect(redirect_to=url)
 
 class CheckPerm(NoCSRFView):
 
