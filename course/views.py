@@ -3,7 +3,7 @@ import hashlib
 from django.http import HttpResponseRedirect
 from django.utils.decorators import method_decorator
 from proxy.views import proxy_view
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import NotFound, PermissionDenied
 from rest_framework.response import Response
 from app.decorators import login_required
 from app.views import NoCSRFView
@@ -46,7 +46,7 @@ class GetView(NoCSRFView):
             course = Course.objects.get(id=course_id, users__in=[user])
 
         except Course.DoesNotExist:
-            raise PermissionError
+            raise PermissionDenied
         resp = []
         schedules = Schedule.objects.filter(course_id=course.id)
         for sc in schedules:
