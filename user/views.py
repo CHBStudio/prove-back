@@ -107,7 +107,6 @@ class GetView(NoCSRFView):
 class VKView(NoCSRFView):
 
     def get(self, request):
-        print(VK_CLIENT_ID,REDIRECT_URL)
         url = 'https://oauth.vk.com/authorize?client_id={}&display=page&redirect_uri={}&scope=friends&response_type=code&v=5.73'.format(
             VK_CLIENT_ID, REDIRECT_URL)
         return HttpResponseRedirect(redirect_to=url)
@@ -115,7 +114,7 @@ class VKView(NoCSRFView):
 
 class VKAuthView(NoCSRFView):
 
-    def get(self,request):
+    def get(self, request):
         code = request.GET.get('code')
         url = 'https://oauth.vk.com/access_token?client_id={}&client_secret={}&redirect_uri={}&code={}'.format(
             VK_CLIENT_ID,
@@ -125,12 +124,10 @@ class VKAuthView(NoCSRFView):
         )
         data = requests.get(url)
         data = data.json()
-        print(data)
         access_token = data.get('access_token')
         user_id = data.get('user_id')
         user_url = 'https://api.vk.com/method/users.get?user_ids={}&fields=bdate&v=5.73'.format(user_id)
         userdata = requests.get(user_url)
-        print(userdata.json())
         userdata = userdata.json()['response'][0]
         first_name = userdata.get('first_name')
         last_name = userdata.get('last_name')
@@ -149,7 +146,8 @@ class VKAuthView(NoCSRFView):
         user = userializer.data
         user['courses'] = []
         return Response(headers={
-            'Set-Cookie': 'Authorization={}; Path=/'.format(token)
+            'Set-Cookie': 'Authorization={}; Path=/'.format(1),
+            'Location': '/'
         },
             data={
                 'user': user
