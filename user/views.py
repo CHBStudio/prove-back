@@ -145,10 +145,12 @@ class VKAuthView(NoCSRFView):
         token = generate_token(email=username, password=first_name, user_id=user.id)
         user = userializer.data
         user['courses'] = []
-        return Response(headers={
-            'Set-Cookie': 'Authorization={}; Path=/'.format(1),
-            'Location': '/'
-        },
-            data={
-                'user': user
-            })
+        return Response(status=302,
+                        headers={
+                            'Set-Cookie': 'Authorization={}; Path=/'.format(token),
+                            'Location': '/'
+                        },
+
+                        data={
+                            'user': user
+                        })
