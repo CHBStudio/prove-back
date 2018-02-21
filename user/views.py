@@ -107,6 +107,7 @@ class GetView(NoCSRFView):
 class VKView(NoCSRFView):
 
     def get(self, request):
+        print(VK_CLIENT_ID,REDIRECT_URL)
         url = 'https://oauth.vk.com/authorize?client_id={}&display=page&redirect_uri={}&scope=friends&response_type=code&v=5.73'.format(
             VK_CLIENT_ID, REDIRECT_URL)
         return HttpResponseRedirect(redirect_to=url)
