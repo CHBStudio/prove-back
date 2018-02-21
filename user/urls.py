@@ -9,6 +9,6 @@ urlpatterns = [
     url(r'^register', RegisterView.as_view()),
     url(r'^logout', LogoutView.as_view()),
     url(r'^vk-auth', VKAuthView.as_view()),
-    url(r'^vk/$', VKView.as_view()),
+    url(r'^vk', VKView.as_view()),
 
 ]

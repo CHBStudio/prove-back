@@ -124,10 +124,13 @@ class VKAuthView(NoCSRFView):
         )
         data = requests.get(url)
         data = data.json()
+        print(data)
         access_token = data.get('access_token')
         user_id = data.get('user_id')
         user_url = 'https://api.vk.com/method/users.get?user_ids={}&fields=bdate&v=5.73'.format(user_id)
-        userdata = requests.get(user_url).json()['response'][0]
+        userdata = requests.get(user_url)
+        print(userdata.json())
+        userdata = userdata.json()['response'][0]
         first_name = userdata.get('first_name')
         last_name = userdata.get('last_name')
         username = str(user_id)
