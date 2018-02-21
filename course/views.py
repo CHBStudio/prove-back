@@ -44,7 +44,6 @@ class GetView(NoCSRFView):
         course_id = request.GET.get('id')
         try:
             course = Course.objects.get(id=course_id, users__in=[user])
-
         except Course.DoesNotExist:
             raise PermissionDenied
         resp = []

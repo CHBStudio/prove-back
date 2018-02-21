@@ -11,3 +11,6 @@ class ResultSerializer(serializers.Serializer):
     photo = serializers.URLField(max_length=1000,required=True)
     description = serializers.CharField(max_length=1000,required=True)
     title = serializers.CharField(max_length=50,required=True)
+
+    def get_mediaphoto(self,obj):
+        return obj.photo.url[1:]
