@@ -147,3 +147,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = config.get('common', 'STATIC_ROOT', fallback='/opt/prove-back/static/')
 
+VK_CLIENT_ID = config.get('oauth', 'vk_client_id', fallback='')
+REDIRECT_URL='http://prove-project.ru/user/vk-auth'
+VK_CLIENT_SECRET = config.get('oauth', 'vk_secret', fallback='')
