@@ -8,7 +8,7 @@ class FaqSerializer(serializers.Serializer):
 
 class ResultSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
-    photo = serializers.URLField(max_length=1000,required=True)
+    photo = serializers.SerializerMethodField('get_mediaphoto')
     description = serializers.CharField(max_length=1000,required=True)
     title = serializers.CharField(max_length=50,required=True)
 
