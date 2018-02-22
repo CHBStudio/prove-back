@@ -18,6 +18,8 @@ class Course(Model):
     active = models.BooleanField(default=False, verbose_name='Активный')
     order = models.IntegerField(null=True, blank=True, default=None, verbose_name='Порядок')
     users = models.ManyToManyField(User, verbose_name='Оплатившие')
+    food = models.TextField(default='Default',verbose_name='Питание')
+    extra = models.TextField(default='Default',verbose_name='Прочее')
 
     def __str__(self):
         return self.title
@@ -54,6 +56,7 @@ class Schedule(Model):
 
 class Exercise(Model):
     schedule = models.ForeignKey(Schedule,on_delete=models.CASCADE,related_name='Расписание')
+    title = models.CharField(max_length=255, blank=False, null=False,default='default', verbose_name='Заголовок')
     video = models.FileField(upload_to='private/video/', default=None, verbose_name='Видео')
     description = models.TextField(verbose_name='Описание')
     order = models.IntegerField(blank=True,null=True,verbose_name='Порядок')

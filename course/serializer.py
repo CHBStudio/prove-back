@@ -12,6 +12,9 @@ class CourseSerializer(serializers.Serializer):
     cost = serializers.IntegerField(required=True)
     advanteges = serializers.StringRelatedField(many=True)
     active = serializers.BooleanField()
+    food = serializers.CharField(required=True)
+    extra = serializers.CharField(required=True)
+
 
     def get_mediaphoto(self, obj):
         return obj.photo.url[1:]

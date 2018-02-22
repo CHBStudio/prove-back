@@ -20,7 +20,7 @@ class ExerciseInline(TabularInline):
 
 class CourseAdmin(admin.ModelAdmin):
     list_display = ('title', 'video_count', 'hour_count', 'photo', 'video', 'cost', 'active', 'description', 'order')
-    fields = ('title', 'video_count', 'hour_count', 'photo', 'video', 'cost', 'active', 'description', 'order')
+    fields = ('title', 'video_count', 'hour_count', 'photo', 'video', 'cost', 'active', 'description', 'order','food','extra')
     list_filter = ('order', 'cost')
     inlines = (AdvantegesInline,UsersInline)
 
