@@ -31,7 +31,7 @@ class PaymentView(NoCSRFView):
         if signature == SignatureValue:
             Payment(
                 user_id=user_id,
-                money=int(outsum),
+                money=int(float(outsum)),
                 create_at=datetime.now(),
                 course_id=int(course_id)
             ).save()
