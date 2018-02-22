@@ -1,6 +1,4 @@
 import hashlib
-
-import requests
 from django.http import HttpResponseRedirect
 from django.utils.decorators import method_decorator
 from proxy.views import proxy_view
@@ -49,11 +47,19 @@ class GetView(NoCSRFView):
             raise PermissionDenied
         resp = []
         schedules = Schedule.objects.filter(course_id=course.id)
-        for sc in schedules:
-            exercises = Exercise.objects.filter(schedule=sc).order_by('order')
+        weeks = set([sc.week for sc in schedules])
+        for week in weeks:
+            weeklist = []
+            schedules = Schedule.objects.filter(course_id=course_id,week=week)
+            for sc in schedules:
+                exercises = Exercise.objects.filter(schedule=sc).order_by('order')
+                weeklist.append({
+                    'day': sc.day,
+                    'exercises': ExerciseSerializer(exercises, many=True).data
+                }
+                )
             resp.append({
-                'day': sc.day,
-                'exercises': ExerciseSerializer(exercises, many=True).data
+                week: weeklist
             })
 
         course = CourseSerializer(course).data
