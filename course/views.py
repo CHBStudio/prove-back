@@ -51,7 +51,7 @@ class GetView(NoCSRFView):
         weeks = set(ws)
         for week in weeks:
             weeklist = []
-            schedules = Schedule.objects.filter(course_id=course_id,week=week)
+            schedules = Schedule.objects.filter(course_id=course_id,week=week).order_by('day')
             for sc in schedules:
                 exercises = Exercise.objects.filter(schedule=sc).order_by('order')
                 weeklist.append({
