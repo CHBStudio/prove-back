@@ -153,4 +153,5 @@ VK_CLIENT_SECRET = config.get('oauth', 'vk_secret', fallback='')
 
 FB_CLIENT_ID = config.get('oauth', 'fb_client_id', fallback='')
 FB_REDIRECT_URL = config.get('oauth', 'fb_redirect_url', fallback='http://prove-project.ru/api/user/fb-auth')
+FB_CLIENT_SECRET = config.get('oauth', 'fb_secret', fallback='')
 

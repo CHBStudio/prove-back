@@ -10,7 +10,7 @@ from app.decorators import login_required
 from app.middleware import CsrfExemptSessionAuthentication
 from app.utils import generate_token
 from app.views import NoCSRFView
-from prove.settings import VK_CLIENT_ID, REDIRECT_URL, VK_CLIENT_SECRET, FB_CLIENT_ID, FB_REDIRECT_URL
+from prove.settings import VK_CLIENT_ID, REDIRECT_URL, VK_CLIENT_SECRET, FB_CLIENT_ID, FB_REDIRECT_URL, FB_CLIENT_SECRET
 from user.models import AuthToken
 from user.serializer import UserSerializer
 
@@ -161,3 +161,46 @@ class FBView(NoCSRFView):
     def get(self, request):
         url = """https://www.facebook.com/v2.12/dialog/oauth?client_id={}&redirect_uri={}&state=bhjsdfghkjsgfhjsdbafkbhj""".format(FB_CLIENT_ID,FB_REDIRECT_URL)
         return HttpResponseRedirect(redirect_to=url)
+
+class FBAuthView(NoCSRFView):
+
+    def get(self,request):
+        code = request.GET.get('code')
+        url = """https://graph.facebook.com/v2.12/oauth/access_token?client_id={}&redirect_uri={}&client_secret={}&code={}""".format(
+            FB_CLIENT_ID,
+            FB_REDIRECT_URL,
+            FB_CLIENT_SECRET,
+            code
+        )
+        data = requests.get(url)
+        data = data.json()
+        access_token = data.get('access_token')
+        user_url = 'https://graph.facebook.com/me?fields=first_name,last_name&access_token={}'.format(access_token)
+        userdata = requests.get(user_url)
+        userdata = userdata.json()['response'][0]
+        user_id = userdata.get('id')
+        first_name = userdata.get('first_name')
+        last_name = userdata.get('last_name')
+        username = str(user_id)
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            user = User(
+                username=username,
+                first_name=first_name,
+                last_name=last_name
+            ).save()
+        user = User.objects.get(username=username)
+        userializer = UserSerializer(user)
+        token = generate_token(email=username, password=first_name, user_id=user.id)
+        user = userializer.data
+        user['courses'] = []
+        return Response(status=302,
+                        headers={
+                            'Set-Cookie': 'Authorization={}; Path=/'.format(token),
+                            'Location': '/'
+                        },
+
+                        data={
+                            'user': user
+                        })
