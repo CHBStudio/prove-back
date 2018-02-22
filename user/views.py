@@ -10,7 +10,7 @@ from app.decorators import login_required
 from app.middleware import CsrfExemptSessionAuthentication
 from app.utils import generate_token
 from app.views import NoCSRFView
-from prove.settings import VK_CLIENT_ID, REDIRECT_URL, VK_CLIENT_SECRET
+from prove.settings import VK_CLIENT_ID, REDIRECT_URL, VK_CLIENT_SECRET, FB_CLIENT_ID, FB_REDIRECT_URL
 from user.models import AuthToken
 from user.serializer import UserSerializer
 
@@ -154,3 +154,10 @@ class VKAuthView(NoCSRFView):
                         data={
                             'user': user
                         })
+
+
+class FBView(NoCSRFView):
+
+    def get(self, request):
+        url = """https://www.facebook.com/v2.12/dialog/oauth?client_id={}&redirect_uri={}&state=bhjsdfghkjsgfhjsdbafkbhj""".format(FB_CLIENT_ID,FB_REDIRECT_URL)
+        return HttpResponseRedirect(redirect_to=url)

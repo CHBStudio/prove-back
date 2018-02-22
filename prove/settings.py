@@ -150,3 +150,7 @@ STATIC_ROOT = config.get('common', 'STATIC_ROOT', fallback='/opt/prove-back/stat
 VK_CLIENT_ID = config.get('oauth', 'vk_client_id', fallback='')
 REDIRECT_URL = config.get('oauth', 'redirect_url', fallback='http://prove-project.ru/api/user/vk-auth')
 VK_CLIENT_SECRET = config.get('oauth', 'vk_secret', fallback='')
+
+FB_CLIENT_ID = config.get('oauth', 'fb_client_id', fallback='')
+FB_REDIRECT_URL = config.get('oauth', 'fb_redirect_url', fallback='http://prove-project.ru/api/user/fb-auth')
+
