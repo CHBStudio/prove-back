@@ -48,7 +48,7 @@ class GetView(NoCSRFView):
         resp = []
         schedules = Schedule.objects.filter(course_id=course.id)
         ws = [sc.week for sc in schedules]
-        weeks = set(ws.sort())
+        weeks = set(ws)
         for week in weeks:
             weeklist = []
             schedules = Schedule.objects.filter(course_id=course_id,week=week)
