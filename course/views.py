@@ -58,9 +58,7 @@ class GetView(NoCSRFView):
                     'exercises': ExerciseSerializer(exercises, many=True).data
                 }
                 )
-            resp.append({
-                week: weeklist
-            })
+            resp.append(weeklist)
 
         course = CourseSerializer(course).data
         return Response(data={
