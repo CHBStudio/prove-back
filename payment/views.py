@@ -15,7 +15,8 @@ class PaymentView(NoCSRFView):
 
     def get(self, request):
         outsum = request.GET.get('OutSum')
-        user_id = request.GET.get('InvId')
+        invid = request.GET.get('InvId')
+        user_id = request.GET.get('Shp_user')
         signature = request.GET.get('SignatureValue')
         course_id = request.GET.get('Shp_course')
         try:
@@ -23,9 +24,9 @@ class PaymentView(NoCSRFView):
             user = User.objects.get(id=user_id)
         except:
             course = None
-            user=None
+            user = None
         SignatureValue = hashlib.md5(
-            '{}:{}:{}:Shp_course={}'.format(outsum, user_id, PASSWORD2, course_id).encode(
+            '{}:{}:{}:Shp_course={}:Shp_user={}'.format(outsum, invid, PASSWORD2, course_id, user_id).encode(
                 'utf-8')).hexdigest()
         if signature == SignatureValue:
             Payment(
@@ -38,6 +39,5 @@ class PaymentView(NoCSRFView):
             course.save()
 
         return Response(
-            data='OK{}'.format(user_id)
+            data='OK{}'.format(invid)
         )
-

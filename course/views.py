@@ -51,14 +51,14 @@ class GetView(NoCSRFView):
         for sc in schedules:
             exercises = Exercise.objects.filter(schedule=sc).order_by('order')
             resp.append({
-                'day':sc.day,
-                'exercises':ExerciseSerializer(exercises,many=True).data
+                'day': sc.day,
+                'exercises': ExerciseSerializer(exercises, many=True).data
             })
 
         course = CourseSerializer(course).data
         return Response(data={
             'course': course,
-            'schedule':resp
+            'schedule': resp
         })
 
 
@@ -70,10 +70,12 @@ class UrlView(NoCSRFView):
         course = Course.objects.get(id=course_id)
         cost = course.cost
         SignatureValue = hashlib.md5(
-            '{}:{}:{}:{}:Shp_course={}'.format(MERCHANT_LOGIN, cost, request.user.id, PASSWORD1, course_id).encode(
+            '{}:{}::{}:Shp_course={}:Shp_user={}'.format(MERCHANT_LOGIN, cost, PASSWORD1,
+                                                         course_id,
+                                                         request.user.id).encode(
                 'utf-8')).hexdigest()
-        url = 'https://auth.robokassa.ru/Merchant/Index.aspx?MerchantLogin={}&OutSum={}&InvId={}&SignatureValue={}&Shp_course={}'.format(
-            MERCHANT_LOGIN, cost, request.user.id, SignatureValue, course_id)
+        url = 'https://auth.robokassa.ru/Merchant/Index.aspx?MerchantLogin={}&OutSum={}&InvDesc={}&SignatureValue={}&Shp_course={}&Shp_user={}'.format(
+            MERCHANT_LOGIN, cost, course.title, SignatureValue, course_id, request.user.id)
 
         return HttpResponseRedirect(redirect_to=url)
 

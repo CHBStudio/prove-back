@@ -27,6 +27,7 @@ class ExerciseSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     video = serializers.SerializerMethodField('get_mediavideo')
     description = serializers.CharField(max_length=1000, required=True)
+    title = serializers.CharField(required=True)
 
     def get_mediavideo(self, obj):
         return obj.video.url[1:]
