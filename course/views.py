@@ -1,5 +1,6 @@
 import hashlib
 
+import requests
 from django.http import HttpResponseRedirect
 from django.utils.decorators import method_decorator
 from proxy.views import proxy_view
@@ -69,6 +70,7 @@ class UrlView(NoCSRFView):
         course_id = request.GET.get('id')
         course = Course.objects.get(id=course_id)
         cost = course.cost
+        cost = cost - cost * 0.0654
         SignatureValue = hashlib.md5(
             '{}:{}::{}:Shp_course={}:Shp_user={}'.format(MERCHANT_LOGIN, cost, PASSWORD1,
                                                          course_id,
