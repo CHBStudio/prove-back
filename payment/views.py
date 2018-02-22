@@ -27,7 +27,7 @@ class PaymentView(NoCSRFView):
             user = None
         SignatureValue = hashlib.md5(
             '{}:{}:{}:Shp_course={}:Shp_user={}'.format(outsum, invid, PASSWORD2, course_id, user_id).encode(
-                'utf-8')).hexdigest()
+                'utf-8')).hexdigest().upper()
         if signature == SignatureValue:
             Payment(
                 user_id=user_id,
