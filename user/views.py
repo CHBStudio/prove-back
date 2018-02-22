@@ -177,7 +177,7 @@ class FBAuthView(NoCSRFView):
         access_token = data.get('access_token')
         user_url = 'https://graph.facebook.com/me?fields=first_name,last_name&access_token={}'.format(access_token)
         userdata = requests.get(user_url)
-        userdata = userdata.json()['response'][0]
+        userdata = userdata.json()
         user_id = userdata.get('id')
         first_name = userdata.get('first_name')
         last_name = userdata.get('last_name')
