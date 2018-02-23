@@ -46,7 +46,7 @@ class GetView(NoCSRFView):
         except Course.DoesNotExist:
             raise PermissionDenied
         resp = []
-        schedules = Schedule.objects.filter(course_id=course.id)
+        schedules = Schedule.objects.filter(course_id=course.id).order_by('week')
         ws = [sc.week for sc in schedules]
         weeks = set(ws)
         for week in weeks:
