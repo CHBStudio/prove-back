@@ -8,6 +8,7 @@ from app.decorators import login_required
 from app.views import NoCSRFView
 from course.models import Course, Exercise, Schedule
 from course.serializer import CourseSerializer, ExerciseSerializer
+from course.user_in_course import UsersInCourse
 from prove import settings
 from prove.settings import MERCHANT_LOGIN, PASSWORD1
 
@@ -21,15 +22,20 @@ class ListView(NoCSRFView):
         response = []
         if courses:
             for course in courses:
-                course = CourseSerializer(course).data
-                c = {
-                    'title': course.title,
-                    'is_active': course.active,
-                    'description': course.description,
-                    'photo': course.photo,
-
-                }
-                response.append(c)
+                days = course.expire
+                userincourse = UsersInCourse.objects.get(course=course, user=user)
+                if userincourse.check_time(days) is None:
+                    userincourse.delete()
+                else:
+                    course = CourseSerializer(course).data
+                    c = {
+                        'title': course.get("title"),
+                        'is_active': course.get("active"),
+                        'description': course.get("description"),
+                        'photo': course.get("photo"),
+                        'expired': userincourse.get_expire(days)
+                    }
+                    response.append(c)
         return Response(data={
             'courses': response
         })
@@ -43,6 +49,11 @@ class GetView(NoCSRFView):
         course_id = request.GET.get('id')
         try:
             course = Course.objects.get(id=course_id, users__in=[user])
+            days = course.expire
+            userincourse = UsersInCourse.objects.get(course=course,user=user)
+            if userincourse.check_time(days) is None:
+                userincourse.delete()
+                raise Course.DoesNotExist
         except Course.DoesNotExist:
             raise PermissionDenied
         resp = []
@@ -62,6 +73,7 @@ class GetView(NoCSRFView):
             resp.append(weeklist)
 
         course = CourseSerializer(course).data
+        course['expired'] = userincourse.get_expire(days)
         return Response(data={
             'course': course,
             'schedule': resp

@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django.db.models import Model
 from django.db import models
 
+from course.user_in_course import UsersInCourse
+
 
 class Course(Model):
     class Meta:
@@ -17,7 +19,8 @@ class Course(Model):
     cost = models.IntegerField(null=False, blank=False, verbose_name='Стоимость')
     active = models.BooleanField(default=False, verbose_name='Активный')
     order = models.IntegerField(null=True, blank=True, default=None, verbose_name='Порядок')
-    users = models.ManyToManyField(User, verbose_name='Оплатившие')
+    users = models.ManyToManyField(User, through=UsersInCourse, verbose_name='Оплатившие')
+    expire = models.IntegerField(default=40, verbose_name='Период действия(в днях)')
     food = models.TextField(default='Default', verbose_name='Питание')
     extra = models.TextField(default='Default', verbose_name='Прочее')
 
@@ -36,6 +39,7 @@ class Advanteges(Model):
     def __str__(self):
         return self.text
 
+
 class Schedule(Model):
     class Meta:
         verbose_name = 'расписание'
@@ -53,6 +57,7 @@ class Schedule(Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Курс')
     day = models.IntegerField(choices=DAY_OF_THE_WEEK, verbose_name='День')
     week = models.IntegerField(verbose_name='Номер недели')
+
 
 class Exercise(Model):
     schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE, related_name='Расписание')

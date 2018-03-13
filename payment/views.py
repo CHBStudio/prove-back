@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from app.decorators import login_required
 from app.views import NoCSRFView
 from course.models import Course
+from course.user_in_course import UsersInCourse
 from payment.models import Payment
 from prove.settings import MERCHANT_LOGIN, PASSWORD1, PASSWORD2
 
@@ -35,7 +36,12 @@ class PaymentView(NoCSRFView):
                 create_at=datetime.now(),
                 course_id=int(course_id)
             ).save()
-            course.users.add(user)
+            userincourse = UsersInCourse(
+                course_id=course_id,
+                user_id=user_id,
+                date=datetime.now()
+            ).save()
+            # course.users.add(userincourse)
             course.save()
 
         return Response(
