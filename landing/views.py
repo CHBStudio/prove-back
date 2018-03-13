@@ -17,11 +17,14 @@ class LandingView(NoCSRFView):
         faqs = Faq.objects.all()
         results = Result.objects.all()
         for course in courses:
-            days = course.expire
-            userincourse = UsersInCourse.objects.get(course=course, user=user)
             course_json = CourseSerializer(course).data
+            days = course.expire
+            try:
+                userincourse = UsersInCourse.objects.get(course=course, user=user)
+                course_json['expired'] = userincourse.get_expire(days)
+            except UsersInCourse.DoesNotExist:
+                course_json['expired'] = None
             course_json['has_permissions'] = True if user.pk and user in course.users.all() else False
-            course_json['expired'] = userincourse.get_expire(days) if userincourse else None
             courseslist.append(course_json)
 
         return Response(data={
