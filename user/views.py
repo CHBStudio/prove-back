@@ -10,6 +10,7 @@ from app.decorators import login_required
 from app.middleware import CsrfExemptSessionAuthentication
 from app.utils import generate_token
 from app.views import NoCSRFView
+from course.user_in_course import UsersInCourse
 from prove.settings import VK_CLIENT_ID, REDIRECT_URL, VK_CLIENT_SECRET, FB_CLIENT_ID, FB_REDIRECT_URL, FB_CLIENT_SECRET
 from user.models import AuthToken
 from user.serializer import UserSerializer
@@ -92,7 +93,16 @@ class GetView(NoCSRFView):
         user = request.user
         if user.pk:
             userdata = UserSerializer(user).data
-            userdata['courses'] = list(user.course_set.values_list('id', flat=True))
+            courses = user.course_set.all()
+            courseslist = []
+            for c in courses:
+                days = c.expire
+                userincourse = UsersInCourse.objects.get(course=c, user=user)
+                if userincourse.check_time(days) is None:
+                    userincourse.delete()
+                else:
+                    courseslist.append(c.id)
+            userdata['courses'] = courseslist
             return Response(data={
                 'user': userdata
             })
@@ -159,12 +169,14 @@ class VKAuthView(NoCSRFView):
 class FBView(NoCSRFView):
 
     def get(self, request):
-        url = """https://www.facebook.com/v2.12/dialog/oauth?client_id={}&redirect_uri={}&state=bhjsdfghkjsgfhjsdbafkbhj""".format(FB_CLIENT_ID,FB_REDIRECT_URL)
+        url = """https://www.facebook.com/v2.12/dialog/oauth?client_id={}&redirect_uri={}&state=bhjsdfghkjsgfhjsdbafkbhj""".format(
+            FB_CLIENT_ID, FB_REDIRECT_URL)
         return HttpResponseRedirect(redirect_to=url)
+
 
 class FBAuthView(NoCSRFView):
 
-    def get(self,request):
+    def get(self, request):
         code = request.GET.get('code')
         url = """https://graph.facebook.com/v2.12/oauth/access_token?client_id={}&redirect_uri={}&client_secret={}&code={}""".format(
             FB_CLIENT_ID,
