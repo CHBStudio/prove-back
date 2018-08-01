@@ -55,6 +55,7 @@ class RegisterView(NoCSRFView):
                 raise ValidationError(detail='Email not unique')
             except User.DoesNotExist:
                 user = User(
+                    username=email,
                     email=email,
                     first_name=first_name,
                     password=make_password(password)
@@ -80,9 +81,7 @@ class LogoutView(NoCSRFView):
         user = request.user
         if user.pk:
             AuthToken.objects.get(user=user).delete()
-            return Response(data={
-                'status': 'ok'
-            })
+
         else:
             raise NotAuthenticated
 
@@ -136,7 +135,8 @@ class VKAuthView(NoCSRFView):
         data = data.json()
         access_token = data.get('access_token')
         user_id = data.get('user_id')
-        user_url = 'https://api.vk.com/method/users.get?access_token=4a9be6044a9be6044a9be604434afa87dc44a9b4a9be604101605ecda0a16e0ca46f3c2&user_ids={}&fields=bdate&v=5.73'.format(user_id)
+        user_url = 'https://api.vk.com/method/users.get?access_token=4a9be6044a9be6044a9be604434afa87dc44a9b4a9be604101605ecda0a16e0ca46f3c2&user_ids={}&fields=bdate&v=5.73'.format(
+            user_id)
         userdata = requests.get(user_url)
         userdata = userdata.json()['response'][0]
         first_name = userdata.get('first_name')
