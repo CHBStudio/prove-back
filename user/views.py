@@ -81,6 +81,11 @@ class LogoutView(NoCSRFView):
         user = request.user
         if user.pk:
             AuthToken.objects.get(user=user).delete()
+            return Response(
+                data={
+                    'user': None
+                }
+            )
 
         else:
             raise NotAuthenticated
