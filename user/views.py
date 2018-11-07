@@ -2,12 +2,9 @@ import requests
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
-from django.utils.decorators import method_decorator
-from rest_framework.exceptions import AuthenticationFailed, ParseError, NotFound, ValidationError, NotAuthenticated
+from rest_framework.exceptions import AuthenticationFailed, NotFound, ParseError, ValidationError, NotAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from app.decorators import login_required
-from app.middleware import CsrfExemptSessionAuthentication
+
 from app.utils import generate_token
 from app.views import NoCSRFView
 from course.user_in_course import UsersInCourse
