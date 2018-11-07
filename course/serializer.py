@@ -9,7 +9,7 @@ class CourseSerializer(serializers.Serializer):
     video = serializers.SerializerMethodField('get_mediavideo')
     video_count = serializers.IntegerField(required=True)
     hour_count = serializers.IntegerField(required=True)
-    cost_discount = serializers.IntegerField(required=True)
+    old_cost = serializers.IntegerField(required=True)
     cost = serializers.IntegerField(required=True)
     advanteges = serializers.StringRelatedField(many=True)
     active = serializers.BooleanField()
